@@ -502,7 +502,7 @@ class Fuzzer():
 	def generate(self):
 		self.domains.add(Permutation(fuzzer='*original', domain='.'.join(filter(None, [self.subdomain, self.domain, self.tld]))))
 		for f_name in [
-			'addition', 'bitsquatting', 'homoglyph', 'hyphenation',
+			'addition', 'hyphenation',
 			'insertion', 'omission', 'repetition', 'replacement',
 			'subdomain', 'transposition', 'vowel-swap', 'dictionary',
 		]:
@@ -691,26 +691,26 @@ class Scanner(threading.Thread):
 						task['dns_mx'] = ['!ServFail']
 					except DNSException as e:
 						self._debug(e)
-			else:
-				try:
-					ip = socket.getaddrinfo(domain, 80)
-				except socket.gaierror as e:
-					if e.errno == -3:
-						task['dns_a'] = ['!ServFail']
-				except Exception as e:
-					self._debug(e)
-				else:
-					task['dns_a'] = list()
-					task['dns_aaaa'] = list()
-					for j in ip:
-						if '.' in j[4][0]:
-							task['dns_a'].append(j[4][0])
-						if ':' in j[4][0]:
-							task['dns_aaaa'].append(j[4][0])
-					task['dns_a'] = sorted(task['dns_a'])
-					task['dns_aaaa'] = sorted(task['dns_aaaa'])
-					dns_a = True
-					dns_aaaa = True
+			# else:
+				# try:
+				# 	ip = socket.getaddrinfo(domain, 80)
+				# except socket.gaierror as e:
+				# 	if e.errno == -3:
+				# 		task['dns_a'] = ['!ServFail']
+				# except Exception as e:
+				# 	self._debug(e)
+				# else:
+				# 	task['dns_a'] = list()
+				# 	task['dns_aaaa'] = list()
+				# 	for j in ip:
+				# 		if '.' in j[4][0]:
+				# 			task['dns_a'].append(j[4][0])
+				# 		if ':' in j[4][0]:
+				# 			task['dns_aaaa'].append(j[4][0])
+				# 	task['dns_a'] = sorted(task['dns_a'])
+				# 	task['dns_aaaa'] = sorted(task['dns_aaaa'])
+				# 	dns_a = True
+				# 	dns_aaaa = True
 
 			if self.option_mxcheck:
 				if dns_mx is True:
